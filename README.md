@@ -28,7 +28,7 @@ An interactive Tic Tac Toe game featuring glowing animations, sound effects, and
 - **JavaScript**: Game logic and interactions.  
 
 ## Preview  
-Check out the game live on [GitHub Pages](#) (Replace `#` with your live link if hosted).  
+Check out the game live on [GitHub Pages](https://devavratd.github.io/Tic-Tac-Toe/)
 
 ## License  
 This project is open-source and available under the [MIT License](LICENSE).  
