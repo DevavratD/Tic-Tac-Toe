@@ -22,38 +22,14 @@ const newGameSound = document.querySelector('#newgame-audio');
 const bgMusic = document.querySelector('#bg-audio');
 const gameContainer = document.querySelector('.game-container');
 
-
-
-if(!localStorage.getItem('gameStarted')){
-    
-    document.addEventListener('click',()=>{
-        clickToStart.style.display='none';
-        gameContainer.style.display='grid'
-        resetbtn.style.display = 'block';
-        playSound(bgMusic);
-
-        localStorage.setItem('gameStarted' , 'true')
-    })
-
-
-};
-
-
-
-
+// Initialize state variables
+let playerX = true; // true = X ; false = O
+let gameOver = false;
 
 // Set audio properties
 bgMusic.volume = 0.03;
 boxSound.volume = 0.7;
 bgMusic.loop = true;
-
-
-
-
-
-
-let playerX = true; // true = X ; false = O
-let gameOver = false;
 
 // Play sound function
 function playSound(sound) {
@@ -61,7 +37,7 @@ function playSound(sound) {
     sound.play();
 }
 
-// Initialize game
+// Initialize game state
 function initGame() {
     boxes.forEach((box) => {
         box.innerHTML = ""; // Clear text
@@ -72,21 +48,6 @@ function initGame() {
     gameOver = false;
     popupOverlay.style.display = 'none'; // Hide popup
 }
-
-// Handle box click
-boxes.forEach((box) => {
-    box.addEventListener('click', () => {
-        if (gameOver || box.innerHTML) return; // Ignore if already filled or game over
-
-        playSound(boxSound);
-        box.innerHTML = playerX ? 'X' : 'O'; // Set X or O
-        box.classList.add(playerX ? "game-btn-x" : "game-btn-o"); // Add corresponding class
-        playerX = !playerX; // Switch player
-
-        box.disabled = true; // Disable box
-        checkWinner(); // Check for winner
-    });
-});
 
 // Check for winner or draw
 function checkWinner() {
@@ -123,6 +84,37 @@ function showPopup(message) {
     popupOverlay.style.display = 'flex';
 }
 
+// Handle box click
+boxes.forEach((box) => {
+    box.addEventListener('click', () => {
+        if (gameOver || box.innerHTML) return; // Ignore if already filled or game over
+
+        playSound(boxSound);
+        box.innerHTML = playerX ? 'X' : 'O'; // Set X or O
+        box.classList.add(playerX ? "game-btn-x" : "game-btn-o"); // Add corresponding class
+        playerX = !playerX; // Switch player
+
+        box.disabled = true; // Disable box
+        checkWinner(); // Check for winner
+    });
+});
+
+// Start the game when clicked anywhere if the game hasn't started yet
+document.addEventListener('click', startGame, { once: true }); // Ensure this only happens once before the game starts
+
+function startGame() {
+    clickToStart.style.display = 'none';
+    gameContainer.style.display = 'grid';
+    resetbtn.style.display = 'block';
+    playSound(bgMusic);
+
+    // Remove the click listener after the game starts
+    document.removeEventListener('click', startGame);
+
+    // Initialize the game state
+    initGame();
+}
+
 // Reset button
 resetbtn.addEventListener('click', () => {
     playSound(resetSound);
@@ -135,5 +127,5 @@ newGameBtn.addEventListener('click', () => {
     initGame();
 });
 
-// Start fresh
+// Initialize the game state (in case the page was refreshed)
 initGame();
